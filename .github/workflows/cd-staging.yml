@@ -5,7 +5,6 @@ on:
     branches: [develop, main]
 
 jobs:
-  # ─── STAGE 1 & 2: Deploy Staging + Migration ───
   deploy-staging:
     name: Deploy to Staging
     runs-on: self-hosted
@@ -16,17 +15,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Stop existing containers
+      - name: Cleanup before build
+        run: |
+          docker compose -f $GITHUB_WORKSPACE/docker-compose.prod.yml down || true
+          docker image prune -af || true
+          docker builder prune -af || true
+
+      - name: Build server image
         run: |
           cd $GITHUB_WORKSPACE
-          docker compose -f docker-compose.prod.yml down || true
+          docker build -t inkubasi2026-server:latest ./server
 
-      - name: Build Docker images
+      - name: Build client image
         run: |
           cd $GITHUB_WORKSPACE
-          docker compose -f docker-compose.prod.yml build
+          docker build -t inkubasi2026-client:latest ./client
 
-      - name: Start database only
+      - name: Start database
         run: |
           cd $GITHUB_WORKSPACE
           export DB_USERNAME=postgres
@@ -36,32 +41,23 @@ jobs:
           export FRONTEND_URL=http://localhost:3000
           export NEXT_PUBLIC_API_URL=http://localhost:3001/api
           docker compose -f docker-compose.prod.yml up -d postgres
-          sleep 10
+          sleep 15
 
       - name: Run DB Migration
         run: |
-          cd $GITHUB_WORKSPACE
-          docker compose -f docker-compose.prod.yml run --rm \
-            -e DB_HOST=postgres \
+          docker run --rm \
+            --network inkubasi2026_default \
+            -e DB_HOST=moderno-db-prod \
             -e DB_PORT=5432 \
             -e DB_USERNAME=postgres \
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
             -e DB_NAME=moderno_db \
             -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
             -e NODE_ENV=staging \
-            server node dist/main.js &
-          sleep 15
-          docker compose -f docker-compose.prod.yml run --rm \
-            -e DB_HOST=postgres \
-            -e DB_USERNAME=postgres \
-            -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-            -e DB_NAME=moderno_db \
-            server node -e "
-              const { DataSource } = require('typeorm');
-              console.log('Migration check done');
-              process.exit(0);
-            " || true
-          echo "✅ Migration step completed"
+            inkubasi2026-server:latest node dist/main.js &
+          sleep 20
+          kill %1 || true
+          echo "✅ Migration completed"
 
       - name: Start all services
         run: |
@@ -76,19 +72,15 @@ jobs:
 
       - name: Health check
         run: |
-          echo "Waiting for services..."
           sleep 30
           curl -f http://localhost:3001/api/products && echo "✅ Backend healthy" || exit 1
           curl -f http://localhost:3000 && echo "✅ Frontend healthy" || exit 1
 
-      - name: Staging summary
+      - name: Summary
         run: |
-          echo "🚀 Staging deployed!"
-          echo "Frontend : http://localhost:3000"
-          echo "Backend  : http://localhost:3001/api"
+          echo "🚀 Staging deployed successfully!"
           docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
-  # ─── STAGE 3: Deploy Production (manual approval) ───
   deploy-production:
     name: Deploy to Production
     runs-on: self-hosted
@@ -99,15 +91,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Stop existing containers
+      - name: Cleanup before build
         run: |
-          cd $GITHUB_WORKSPACE
-          docker compose -f docker-compose.prod.yml down || true
+          docker compose -f $GITHUB_WORKSPACE/docker-compose.prod.yml down || true
+          docker image prune -af || true
+          docker builder prune -af || true
 
-      - name: Build Docker images
+      - name: Build server image
         run: |
           cd $GITHUB_WORKSPACE
-          docker compose -f docker-compose.prod.yml build
+          docker build -t inkubasi2026-server:latest ./server
+
+      - name: Build client image
+        run: |
+          cd $GITHUB_WORKSPACE
+          docker build -t inkubasi2026-client:latest ./client
 
       - name: Start all services
         run: |
@@ -126,7 +124,7 @@ jobs:
           curl -f http://localhost:3001/api/products && echo "✅ Production backend healthy" || exit 1
           curl -f http://localhost:3000 && echo "✅ Production frontend healthy" || exit 1
 
-      - name: Production summary
+      - name: Summary
         run: |
           echo "🚀 Production deployed! (Rolling Update Strategy)"
           docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
