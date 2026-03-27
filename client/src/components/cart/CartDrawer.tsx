@@ -79,11 +79,11 @@ export function CartDrawer() {
           <div className="px-6 py-5 border-t border-[#E8E6DF] space-y-4">
             <div className="flex justify-between text-sm">
               <span className="text-[#888780]">Subtotal</span>
-              <span className="font-medium">{formatPrice(cart.subtotal)}</span>
+              <span className="font-medium">{formatPrice(cart?.subtotal ?? 0)}</span>
             </div>
             <div className="flex justify-between text-xs text-[#888780]">
               <span>Shipping calculated at checkout</span>
-              {cart.subtotal >= 500000 && <span className="text-green-700">Free shipping!</span>}
+              {(cart?.subtotal ?? 0) >= 500000 && <span className="text-green-700">Free shipping!</span>}
             </div>
             <Link
               href="/checkout"
