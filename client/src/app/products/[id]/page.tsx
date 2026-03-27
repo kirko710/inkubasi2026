@@ -1,10 +1,10 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import api from '@/src/lib/api';
-import { Product } from '@/src/types';
-import { useCartStore } from '@/src/store/cart.store';
-import { useAuthStore } from '@/src/store/auth.store';
+import api from '@/lib/api';
+import { Product } from '@/types';
+import { useCartStore } from '@/store/cart.store';
+import { useAuthStore } from '@/store/auth.store';
 import { ShoppingBag, Heart, ArrowLeft, Check } from 'lucide-react';
 import Link from 'next/link';
 

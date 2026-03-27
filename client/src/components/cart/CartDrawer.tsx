@@ -1,6 +1,6 @@
 'use client';
-import { useCartStore } from '@/src/store/cart.store';
-import { useAuthStore } from '@/src/store/auth.store';
+import { useCartStore } from '@/store/cart.store';
+import { useAuthStore } from '@/store/auth.store';
 import { X, Minus, Plus, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
 

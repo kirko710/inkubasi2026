@@ -1,9 +1,9 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import api from '@/src/lib/api';
-import { Product, PaginatedResponse } from '@/src/types';
-import { ProductCard } from '@/src/components/product/ProductCard';
+import api from '@/lib/api';
+import { Product, PaginatedResponse } from '@/types';
+import { ProductCard } from '@/components/product/ProductCard';
 import { Search, SlidersHorizontal } from 'lucide-react';
 
 const CATEGORIES = ['all', 'women', 'men', 'accessories', 'sale'];

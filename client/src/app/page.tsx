@@ -1,9 +1,9 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Product } from '@/src/types';
-import api from '@/src/lib/api';
-import { ProductCard } from '@/src/components/product/ProductCard';
+import { Product } from '@/types';
+import api from '@/lib/api';
+import { ProductCard } from '@/components/product/ProductCard';
 import { ArrowRight, ChevronRight } from 'lucide-react';
 
 export default function HomePage() {

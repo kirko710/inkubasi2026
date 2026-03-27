@@ -1,10 +1,10 @@
 'use client';
-import { Product } from '@/src/types';
+import { Product } from '@/types';
 import { Heart, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
-import { useCartStore } from '@/src/store/cart.store';
-import { useAuthStore } from '@/src/store/auth.store';
+import { useCartStore } from '@/store/cart.store';
+import { useAuthStore } from '@/store/auth.store';
 import { useRouter } from 'next/navigation';
 
 interface Props { product: Product; }

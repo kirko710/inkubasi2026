@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { Navbar } from '@/src/components/layout/Navbar';
-import { CartDrawer } from '@/src/components/cart/CartDrawer';
+import { Navbar } from '@/components/layout/Navbar';
+import { CartDrawer } from '@/components/cart/CartDrawer';
 
 export const metadata: Metadata = {
   title: 'MODERNO — Fashion & Apparel',

@@ -1,9 +1,9 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/src/store/auth.store';
-import api from '@/src/lib/api';
-import { Order } from '@/src/types';
+import { useAuthStore } from '@/store/auth.store';
+import api from '@/lib/api';
+import { Order } from '@/types';
 
 const STATUS_STYLES: Record<string, string> = {
   pending: 'bg-[#FAEEDA] text-[#633806]',

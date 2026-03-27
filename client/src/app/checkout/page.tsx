@@ -1,9 +1,9 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useCartStore } from '@/src/store/cart.store';
-import { useAuthStore } from '@/src/store/auth.store';
-import api from '@/src/lib/api';
+import { useCartStore } from '@/store/cart.store';
+import { useAuthStore } from '@/store/auth.store';
+import api from '@/lib/api';
 import { Check, ShoppingBag } from 'lucide-react';
 
 export default function CheckoutPage() {

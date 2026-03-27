@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import api from '@/src/lib/api';
-import { Cart } from '@/src/types';
+import api from '@/lib/api';
+import { Cart } from '@/types';
 
 interface CartState {
   cart: Cart | null;
