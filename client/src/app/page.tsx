@@ -147,7 +147,7 @@ export default function HomePage() {
           </div>
         </div>
         <div className="max-w-7xl mx-auto mt-8 pt-6 border-t border-[#E8E6DF] text-xs text-[#B4B2A9]">
-          © 2025 MODERNO. All rights reserved.
+          © 2025 MODERNO. 
         </div>
       </footer>
     </div>
